@@ -326,13 +326,9 @@ pub fn customize_seed_ap(
 
     if settings.is_some()
         && let Some(json) = randomization
-        && let Ok(mut randomization) = serde_json::from_str(&json)
+        && let Ok(mut randomization) = serde_json::from_str<Randomization>(&json)
     {
         info!("Patching ROM");
-        randomization.item_placement = new_item_placement;
-        if new_item_spoiler_infos.is_some() {
-            randomization.essential_spoiler_data.item_spoiler_info = new_item_spoiler_infos.unwrap();
-        }
         upgrade_randomization(&mut randomization);
         match make_rom(
             &rom,
