@@ -1990,7 +1990,7 @@ dependencies = [
 
 [[package]]
 name = "pysmmaprando"
-version = "0.119.2+experimental1"
+version = "0.119.2+experimental2"
 dependencies = [
  "anyhow",
  "apache-avro",
