@@ -243,12 +243,12 @@ pub fn customize_seed_ap(
         return HttpResponse::BadRequest().body(InvalidRomTemplate {}.render().unwrap());
     }
 */
+    let ultra_low_qol = if settings.is_some() {
+        settings.as_ref().unwrap().other_settings.ultra_low_qol
+    } else {
+        false
+    };
     let customize_settings = CustomizeSettings {
-        let ultra_low_qol = if settings.is_some() {
-            settings.as_ref().unwrap().other_settings.ultra_low_qol
-        } else {
-            false
-        };
         samus_sprite: if ultra_low_qol
             && req.samus_sprite == "samus_vanilla"
             && req.vanilla_screw_attack_animation
