@@ -48,7 +48,8 @@ pub struct AppData {
     pub game_data: GameData,
     #[pyo3(get)]
     pub preset_data: PresetData,
-    pub map_repositories: HashMap<String, MapRepository>,
+    #[pyo3(get)]
+    pub map_repositories: HashMap<String, Option<MapRepository>>,
     //pub seed_repository: SeedRepository,
     //pub visualizer_files: Vec<(String, Vec<u8>)>, // (path, contents)
     //pub video_storage_url: String,
@@ -144,6 +145,20 @@ fn build_app_data(apworld_path: Option<String>) -> AppData {
     //let samus_sprite_categories: Vec<SamusSpriteCategory> =
     //    serde_json::from_str(&std::fs::read_to_string(&samus_sprites_path).unwrap()).unwrap();
 
+    let map_types: Vec<(&str, &Path)> = vec![
+        ("Vanilla", vanilla_map_path),
+        ("Small", small_maps_path),
+        ("Standard", standard_maps_path),
+        ("Wild", wild_maps_path)
+    ];
+    let mut map_repositories: HashMap<String, Option<MapRepository>> = vec![].into_iter().collect();
+
+    for (map_type, repo_path) in map_types {
+        let map_repo: Result<MapRepository, _> = MapRepository::new(map_type, repo_path, &game_data);
+        map_repositories.insert(map_type.to_string(), map_repo.map_or_else(|_| None, |r| Some(r)));
+    }
+
+    /*
     let map_repositories: HashMap<String, MapRepository> = vec![
         (
             "Vanilla".to_string(),
@@ -164,6 +179,7 @@ fn build_app_data(apworld_path: Option<String>) -> AppData {
     ]
     .into_iter()
     .collect();
+    */
 
     let app_data = AppData {
         game_data,
@@ -317,7 +333,7 @@ fn randomize_ap(
             panic!("Unrecognized map layout option: {map_layout}");
         }
         if map_batch.is_empty() {
-            map_batch = app_data.map_repositories[&map_layout]
+            map_batch = app_data.map_repositories[&map_layout].as_ref().unwrap()
                 .get_map_batch(map_seed, &app_data.game_data, &client)
                 .unwrap();
         }

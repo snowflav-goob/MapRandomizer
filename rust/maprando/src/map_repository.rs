@@ -10,11 +10,13 @@ use std::{
     io::{BufReader, Cursor},
     path::{Path, PathBuf},
 };
+use pyo3::prelude::*;
 
 use crate::randomize::Randomizer;
 use maprando_game::{GameData, Map, RoomId};
 
 #[derive(Clone)]
+#[pyclass]
 pub struct MapRepository {
     pub base_path: PathBuf,
     pub filenames: Vec<String>,

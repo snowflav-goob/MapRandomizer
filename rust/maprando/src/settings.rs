@@ -19,6 +19,7 @@ pub struct RandomizerSettings {
     pub item_progression_settings: ItemProgressionSettings,
     pub quality_of_life_settings: QualityOfLifeSettings,
     pub objective_settings: ObjectiveSettings,
+    #[pyo3(get)]
     pub map_layout: String,
     pub doors_mode: DoorsMode,
     pub start_location_settings: StartLocationSettings,
